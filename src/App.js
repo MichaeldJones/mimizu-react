@@ -1,24 +1,37 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState, useEffect } from "react";
+import { Table } from "./components/Table"
+import { Intro } from "./components/Intro"
+import { Header } from "./components/Header"
+import { orderBy } from "lodash";
+
 
 function App() {
+  const [books, setBooks] = useState([]);
+  const [query, setQuery] = useState("");
+  const [sort, setSort] = useState(["", ""]);
+
+  useEffect(() => {
+    fetch('http://3.140.36.36/api/books')
+      .then(response => response.json())
+      .then(data => setBooks(data));
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+
+    <>
+      <Intro />
+
+      <Header 
+        setQuery={ setQuery }
+      />
+
+      <Table 
+        books={ orderBy(books, sort[0], sort[1]) }
+        query={ query }
+        sort={ sort }
+        setSort={ setSort }
+      />
+    </>
   );
 }
 
